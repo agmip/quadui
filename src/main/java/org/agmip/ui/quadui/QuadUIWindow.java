@@ -68,6 +68,7 @@ public class QuadUIWindow extends Window implements Bindable {
     private Checkbox modelApsim = null;
     private Checkbox modelDssat = null;
     private Checkbox modelSarrah33 = null;
+    private Checkbox modelInfoCrop = null;
     private Checkbox modelStics = null;
     private Checkbox modelWofost = null;
     private Checkbox modelCgnau = null;
@@ -255,6 +256,7 @@ public class QuadUIWindow extends Window implements Bindable {
         modelApsim          = (Checkbox) ns.get("model-apsim");
         modelDssat          = (Checkbox) ns.get("model-dssat");
         modelSarrah33       = (Checkbox) ns.get("model-sarrah33");
+        modelInfoCrop       = (Checkbox) ns.get("model-infocrop");
         modelStics          = (Checkbox) ns.get("model-stics");
         modelWofost         = (Checkbox) ns.get("model-wofost");
         modelCgnau          = (Checkbox) ns.get("model-cgnau");
@@ -269,6 +271,7 @@ public class QuadUIWindow extends Window implements Bindable {
         checkboxGroup.add(modelApsim);
         checkboxGroup.add(modelDssat);
         checkboxGroup.add(modelSarrah33);
+        checkboxGroup.add(modelInfoCrop);
         checkboxGroup.add(modelStics);
         checkboxGroup.add(modelWofost);
         checkboxGroup.add(modelCgnau);
@@ -714,6 +717,7 @@ public class QuadUIWindow extends Window implements Bindable {
                 modelApsim.setEnabled(acebOnly);
                 modelDssat.setEnabled(acebOnly);
                 modelSarrah33.setEnabled(acebOnly);
+                modelInfoCrop.setEnabled(acebOnly);
                 modelStics.setEnabled(acebOnly);
                 modelWofost.setEnabled(acebOnly);
                 modelCgnau.setEnabled(acebOnly);
@@ -739,6 +743,7 @@ public class QuadUIWindow extends Window implements Bindable {
         initCheckBox(modelApsim, "last_model_select_apsim");
         initCheckBox(modelDssat, "last_model_select_dssat");
         initCheckBox(modelSarrah33, "last_model_select_sarrah33");
+        initCheckBox(modelInfoCrop, "last_model_select_infocrop");
         initCheckBox(modelCgnau, "last_model_select_cgnau");
         initCheckBox(modelStics, "last_model_select_stics");
         initCheckBox(modelWofost, "last_model_select_wofost");
@@ -1082,6 +1087,9 @@ public class QuadUIWindow extends Window implements Bindable {
         }
         if (modelSarrah33.isSelected()) {
             models.add("SarraHV33");
+        }
+        if (modelInfoCrop.isSelected()) {
+            models.add("InfoCrop");
         }
         if (modelStics.isSelected()) {
             models.add("STICS");
