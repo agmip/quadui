@@ -32,7 +32,7 @@ public class QuadCmdLine {
 
     public enum Model {
 
-        DSSAT, APSIM, APSIM_Div, SarraHV33, STICS, WOFOST, CropGrowNAU, JSON
+        DSSAT, APSIM, APSIM_Div, SarraHV33, InfoCrop, STICS, WOFOST, CropGrowNAU, JSON
     }
     private static final Logger LOG = LoggerFactory.getLogger(QuadCmdLine.class);
     private DomeMode mode = DomeMode.NONE;
@@ -146,6 +146,8 @@ public class QuadCmdLine {
                 }
             } else if (args[i].equalsIgnoreCase("-sarrahv33")) {
                 addModel(Model.SarraHV33.toString());
+            } else if (args[i].equalsIgnoreCase("-infocrop")) {
+                addModel(Model.InfoCrop.toString());
             } else if (args[i].equalsIgnoreCase("-stics")) {
                 addModel(Model.STICS.toString());
             } else if (args[i].equalsIgnoreCase("-wofost")) {
@@ -184,6 +186,9 @@ public class QuadCmdLine {
                 }
                 if (args[i].contains("H")) {
                     addModel(Model.SarraHV33.toString());
+                }
+                if (args[i].contains("I")) {
+                    addModel(Model.InfoCrop.toString());
                 }
                 if (args[i].contains("S")) {
                     addModel(Model.STICS.toString());
@@ -688,6 +693,7 @@ public class QuadCmdLine {
         System.out.println("\t\t-D | -dssat\tDSSAT");
         System.out.println("\t\t-A | -apsim\tAPSIM");
         System.out.println("\t\t-H | -sarrahv33\tSarraHV33");
+        System.out.println("\t\t-I | -infocrop\tInfoCrop");
         System.out.println("\t\t-S | -stics\tSTICS");
         System.out.println("\t\t-W | -wofost\tWOFOST");
         System.out.println("\t\t-C | -cropgrownau\tCropGrow-NAU");

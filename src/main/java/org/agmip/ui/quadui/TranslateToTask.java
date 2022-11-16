@@ -25,6 +25,7 @@ import org.agmip.core.types.DividableOutputTranslator;
 import org.agmip.translators.agmip.AgmipOutput;
 import org.agmip.translators.apsim.ApsimWriterDiv;
 import org.agmip.translators.cropgrownau.CropGrowNAUOutput;
+import org.agmip.translators.infocrop.InfoCropOutput;
 import org.agmip.translators.stics.SticsOutput;
 import org.agmip.translators.wofost.WofostOutputController;
 import org.agmip.util.JSONAdapter;
@@ -180,6 +181,9 @@ public class TranslateToTask extends Task<String> {
                 translator = new ApsimWriter();
             }
             ((ApsimWriter) translator).setOutputCraftBat(this.isRunCmd);
+        } else if (trType.equals("InfoCrop")) {
+            LOG.info("InfoCrop Translator Started");
+            translator = new InfoCropOutput();
         } else if (trType.equals("STICS")) {
             LOG.info("STICS Translator Started");
             translator = new SticsOutput();

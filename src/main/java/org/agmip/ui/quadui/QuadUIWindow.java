@@ -68,6 +68,7 @@ public class QuadUIWindow extends Window implements Bindable {
     private Checkbox modelApsim = null;
     private Checkbox modelDssat = null;
     private Checkbox modelSarrah33 = null;
+    private Checkbox modelInfoCrop = null;
     private Checkbox modelStics = null;
     private Checkbox modelWofost = null;
     private Checkbox modelCgnau = null;
@@ -94,8 +95,8 @@ public class QuadUIWindow extends Window implements Bindable {
     private TextInput batchText = null;
     private TextInput fieldText = null;
     private TextInput strategyText = null;
-    private ArrayList<Checkbox> checkboxGroup = new ArrayList<Checkbox>();
-    private ArrayList<String> errors = new ArrayList<String>();
+    private ArrayList<Checkbox> checkboxGroup = new ArrayList<>();
+    private ArrayList<String> errors = new ArrayList<>();
     private Properties versionProperties = new Properties();
     private String quadVersion = "";
     private Preferences pref = null;
@@ -116,10 +117,8 @@ public class QuadUIWindow extends Window implements Bindable {
     private boolean isBatchApplied;
 
     public QuadUIWindow() {
-        try {
-            InputStream versionFile = getClass().getClassLoader().getResourceAsStream("product.properties");
+        try (InputStream versionFile = getClass().getClassLoader().getResourceAsStream("product.properties")){
             versionProperties.load(versionFile);
-            versionFile.close();
             StringBuilder qv = new StringBuilder();
             String buildType = versionProperties.getProperty("product.buildtype");
             qv.append("Version ");
@@ -143,7 +142,7 @@ public class QuadUIWindow extends Window implements Bindable {
     }
 
     private ArrayList<String> validateInputs() {
-        ArrayList<String> errs = new ArrayList<String>();
+        ArrayList<String> errs = new ArrayList<>();
         if (!acebOnly) {
             boolean anyModelChecked = false;
             for (Checkbox cbox : checkboxGroup) {
@@ -184,8 +183,7 @@ public class QuadUIWindow extends Window implements Bindable {
         if (!convertFile.exists()) {
             errs.add("You need to include a " + dataType + " data to convert");
         } else if (convertFile.getName().toLowerCase().endsWith(".zip") && allowedExts.length > 0) {
-            try {
-                ZipFile zf = new ZipFile(convertFile);
+            try (ZipFile zf = new ZipFile(convertFile)) {
                 Enumeration<? extends ZipEntry> e = zf.entries();
                 boolean isCulExist = false;
                 while (e.hasMoreElements()) {
@@ -216,7 +214,6 @@ public class QuadUIWindow extends Window implements Bindable {
                 if (dataType.equals("cultivar") && !isCulExist) {
                     errs.add("Your " + dataType +" data don't contains " + dataType + " folder");
                 }
-                zf.close();
             } catch (IOException ex) {
             }
         }
@@ -259,6 +256,7 @@ public class QuadUIWindow extends Window implements Bindable {
         modelApsim          = (Checkbox) ns.get("model-apsim");
         modelDssat          = (Checkbox) ns.get("model-dssat");
         modelSarrah33       = (Checkbox) ns.get("model-sarrah33");
+        modelInfoCrop       = (Checkbox) ns.get("model-infocrop");
         modelStics          = (Checkbox) ns.get("model-stics");
         modelWofost         = (Checkbox) ns.get("model-wofost");
         modelCgnau          = (Checkbox) ns.get("model-cgnau");
@@ -273,6 +271,7 @@ public class QuadUIWindow extends Window implements Bindable {
         checkboxGroup.add(modelApsim);
         checkboxGroup.add(modelDssat);
         checkboxGroup.add(modelSarrah33);
+        checkboxGroup.add(modelInfoCrop);
         checkboxGroup.add(modelStics);
         checkboxGroup.add(modelWofost);
         checkboxGroup.add(modelCgnau);
@@ -718,6 +717,7 @@ public class QuadUIWindow extends Window implements Bindable {
                 modelApsim.setEnabled(acebOnly);
                 modelDssat.setEnabled(acebOnly);
                 modelSarrah33.setEnabled(acebOnly);
+                modelInfoCrop.setEnabled(acebOnly);
                 modelStics.setEnabled(acebOnly);
                 modelWofost.setEnabled(acebOnly);
                 modelCgnau.setEnabled(acebOnly);
@@ -743,6 +743,7 @@ public class QuadUIWindow extends Window implements Bindable {
         initCheckBox(modelApsim, "last_model_select_apsim");
         initCheckBox(modelDssat, "last_model_select_dssat");
         initCheckBox(modelSarrah33, "last_model_select_sarrah33");
+        initCheckBox(modelInfoCrop, "last_model_select_infocrop");
         initCheckBox(modelCgnau, "last_model_select_cgnau");
         initCheckBox(modelStics, "last_model_select_stics");
         initCheckBox(modelWofost, "last_model_select_wofost");
@@ -845,7 +846,7 @@ public class QuadUIWindow extends Window implements Bindable {
                     quitCurRun(false, isBatchApplied);
                 }
             };
-            task.execute(new TaskAdapter<HashMap>(listener));
+            task.execute(new TaskAdapter<>(listener));
         } catch (Exception ex) {
             LOG.error(getCurBatchInfo() + getStackTrace(ex));
             if (ex.getClass().getSimpleName().equals("ZipException")) {
@@ -890,7 +891,7 @@ public class QuadUIWindow extends Window implements Bindable {
                 quitCurRun(false, isBatchApplied);
             }
         };
-        task.execute(new TaskAdapter<HashMap>(listener));
+        task.execute(new TaskAdapter<>(listener));
     }
 
     protected void dumpToAceb(HashMap map) {
@@ -980,7 +981,7 @@ public class QuadUIWindow extends Window implements Bindable {
                 }
             }
         };
-        task.execute(new TaskAdapter<HashMap<String, String>>(listener));
+        task.execute(new TaskAdapter<>(listener));
     }
 
     private void applyDome(HashMap map, String mode, ArrayList<String> skipVarList) {
@@ -1017,7 +1018,7 @@ public class QuadUIWindow extends Window implements Bindable {
                 quitCurRun(false, isBatchApplied);
             }
         };
-        task.execute(new TaskAdapter<HashMap>(listener));
+        task.execute(new TaskAdapter<>(listener));
     }
 
     private void toOutput(HashMap map, HashMap<String, String> domeIdHashMap) {
@@ -1087,6 +1088,9 @@ public class QuadUIWindow extends Window implements Bindable {
         if (modelSarrah33.isSelected()) {
             models.add("SarraHV33");
         }
+        if (modelInfoCrop.isSelected()) {
+            models.add("InfoCrop");
+        }
         if (modelStics.isSelected()) {
             models.add("STICS");
         }
@@ -1134,7 +1138,7 @@ public class QuadUIWindow extends Window implements Bindable {
                     quitCurRun(false, isBatchApplied);
                 }
             };
-            task.execute(new TaskAdapter<String>(listener));
+            task.execute(new TaskAdapter<>(listener));
         } else {
             if (models.indexOf("JSON") != -1) {
                 DumpToJson task = new DumpToJson(convertExpText.getText(), outputDir, map);
@@ -1154,7 +1158,7 @@ public class QuadUIWindow extends Window implements Bindable {
 //                        enableConvertIndicator(false);
                     }
                 };
-                task.execute(new TaskAdapter<String>(listener));
+                task.execute(new TaskAdapter<>(listener));
             }
             toOutput2(models, map, domeIdHashMap);
         }
@@ -1250,8 +1254,7 @@ public class QuadUIWindow extends Window implements Bindable {
             msg = "";
             autoApply = false;
         } else if (fileName.endsWith(".zip")) {
-            try {
-                ZipFile zf = new ZipFile(convertFile);
+            try (ZipFile zf = new ZipFile(convertFile)) {
                 Enumeration<? extends ZipEntry> e = zf.entries();
                 while (e.hasMoreElements()) {
                     ZipEntry ze = (ZipEntry) e.nextElement();
@@ -1265,7 +1268,6 @@ public class QuadUIWindow extends Window implements Bindable {
                         break;
                     }
                 }
-                zf.close();
             } catch (IOException ex) {
             }
 
